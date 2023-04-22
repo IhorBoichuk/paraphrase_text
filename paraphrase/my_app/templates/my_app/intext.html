@@ -1,0 +1,12 @@
+{% extends 'my_app/base.html' %}
+
+
+
+{% block text %}
+    <form method='post' enctype='multipart/form-data'>{% csrf_token %}
+            {{form.tree}}<br>
+            {{form.limit}}<br>
+            <button type='submit' class='btn btn-success'>Застосувати</button>
+        
+    </form>
+{% endblock text %}
