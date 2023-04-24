@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    path('paraphrase/home', views.index, name='home'),
-    path('paraphrase/', views.PhraseCreateView.as_view(), name='form'),
+    path('home/', views.index, name='home'),
+    path('', views.PhraseCreateView.as_view(), name='form'),
     
 ]

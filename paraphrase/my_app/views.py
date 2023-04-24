@@ -9,6 +9,9 @@ from my_app.serializers import MyTextSerializer
 from rest_framework.response import Response
 import json
 from rest_framework import status
+from rest_framework import generics
+import nltk
+from nltk import Tree
 
 def index(request):
     my_obj = MyText.objects.last()
@@ -23,17 +26,22 @@ class PhraseCreateView(CreateView):
     success_url = 'home'
     
 
-class ParaphraseAPIView(APIView):
+class ParaphraseAPIView(generics.ListAPIView):
+    
+    serializer_class = MyTextSerializer
        
-    def post(self, request):
-        data = (json.loads(request.body))
-        serializer = MyTextSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+    def get(self, request):
+        
+        my_tree = nltk.Tree.fromstring(request.GET['tree'])
         try:
-            my_obj = MyText.objects.get(tree=data['tree'])
-            return Response({
-                'hash': MyTextSerializer(my_obj).data['tree'],
-                'valid_to' : MyTextSerializer(my_obj).data['expires']
-                })
+            limit = int(nltk.Tree.fromstring(request.GET['limit']))
         except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)    
+            limit = 20
+
+        text = " ".join(my_tree.flatten())
+
+        res = list(main(text, limit))
+        print(res)
+        
+        return Response({'tree': MyTextSerializer(res, many=True).data})
+          
