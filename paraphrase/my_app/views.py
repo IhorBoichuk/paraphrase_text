@@ -7,9 +7,7 @@ from .services import main
 from rest_framework.views import APIView
 from my_app.serializers import MyTextSerializer
 from rest_framework.response import Response
-import json
-from rest_framework import status
-from rest_framework import generics
+
 import nltk
 from nltk import Tree
 
@@ -26,22 +24,14 @@ class PhraseCreateView(CreateView):
     success_url = 'home'
     
 
-class ParaphraseAPIView(generics.ListAPIView):
-    
+class ParaphraseAPIView(APIView):
     serializer_class = MyTextSerializer
        
     def get(self, request):
-        
-        my_tree = nltk.Tree.fromstring(request.GET['tree'])
-        try:
-            limit = int(nltk.Tree.fromstring(request.GET['limit']))
-        except:
-            limit = 20
-
-        text = " ".join(my_tree.flatten())
-
-        res = list(main(text, limit))
-        print(res)
-        
-        return Response({'tree': MyTextSerializer(res, many=True).data})
+        params = request.GET.dict()
+        text = params.get('tree',"")
+        my_tree = " ".join(nltk.Tree.fromstring(text).flatten())
+        limit = params.get('limit', 20)
+        res = list(main(my_tree, limit))
+        return Response({'tree': res})
           
