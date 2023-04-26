@@ -28,10 +28,11 @@ class ParaphraseAPIView(APIView):
     serializer_class = MyTextSerializer
        
     def get(self, request):
-        params = request.GET.dict()
-        text = params.get('tree',"")
-        my_tree = " ".join(nltk.Tree.fromstring(text).flatten())
-        limit = params.get('limit', 20)
-        res = list(main(my_tree, limit))
-        return Response({'tree': res})
+        main()
+        # params = request.GET.dict()
+        # text = params.get('tree',"")
+        # my_tree = " ".join(nltk.Tree.fromstring(text).flatten())
+        # limit = params.get('limit', 20)
+        # res = list(main(my_tree, limit))
+        return Response({'tree': "res"})
           
